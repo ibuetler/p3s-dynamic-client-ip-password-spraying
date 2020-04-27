@@ -1,5 +1,5 @@
 # Introduction
-In this python3 coding exercise you will learn how to connect and authenticate to a `http`, `ssh` and `ftp` service in python3. 
+In this python3 coding exercise you will learn how to connect and authenticate to an `http` service in python3 using proxies.
 
 ```
                             +--------------+--------------+
@@ -19,8 +19,7 @@ In this python3 coding exercise you will learn how to connect and authenticate t
 
 * bypass common intrusion prevention systems used for web services
 * setup Tor and use it within python
-* perform a password spraying attack
-* write an external Metasploit module
+* perform a password spraying attack on an HTTP service
 
 ## Tasks
 
@@ -28,7 +27,6 @@ In this python3 coding exercise you will learn how to connect and authenticate t
 * Task 2: Analyze the Challenge 
 * Task 3: Tor installation and setup
 * Task 4: Password Spraying using Python
-* Task 5: Writing a Metasploit Module
 
 ## Preparation
 
@@ -36,26 +34,21 @@ In this python3 coding exercise you will learn how to connect and authenticate t
 mkdir -p /opt/git
 cd /opt/git
 git clone https://github.com/ibuetler/p3s-dynamic-client-ip-password-spraying.git
-cd /opt/git/p3s-dynamic-client-ip-password-spraying
+cd /opt/git/p3s-dynamic-client-ip-password-spraying/HTTP-Tor
 pipenv --python 3 sync
 pipenv --python 3 shell
 ```
 
-
-
 # Analyzing Fail2Ban
 
-![Fail2Ban-Service](/media/challenge/png/fail2ban.png)
+![Fail2Ban-Service](../media/challenge/png/fail2ban.png)
 
 ## Step 1
 
 ### Resource
 
 * Get the canonical name from `RESOURCES`
-* The three services are running on:
-  * HTTP: port `80`
-  * FTP: port `21`
-  * SSH: port `22`
+* The HTTP service is running on port `80`
 
 ## Step 2
 
@@ -66,9 +59,9 @@ Fail2Ban is an intrusion prevention software framework that protects computer se
 * The intrusion detection tool `fail2ban` is activated on the host. 
 * lockout period is set to 10 minutes
 
-Send some requests to one of the services trying to authenticate with some random username and password. Make sure to count each of your requests so you know how many failed login attempts are possible before your IP gets banned.
+Send some requests to the service trying to authenticate with some random username and password. Make sure to count each of your requests so you know how many failed login attempts are possible before your IP gets banned.
 
-For `HTTP` you can use curl and Basic authentication as follows:
+You can use curl with basic authentication as follows:
 
 ```bash
 curl https://user:password@pwspray.vm.vuln.land
@@ -124,7 +117,7 @@ The password spraying server has some hints for you prepared when heading to htt
 3. The services are **fail2ban** protected with a 10 minutes lockout period
 4. Every service has its unique user database (they are not shared)
 
-![Password Spraying Server](/media/challenge/png/password-spraying-server.png)
+![Password Spraying Server](../media/challenge/png/password-spraying-server.png)
 
 **Hint: ** The server runs two different websites your *attack target* will be running on port `80` not on port `443` and isn't using SSL! 
 
@@ -179,7 +172,7 @@ curl --socks5 localhost:9050 --socks5-hostname localhost:9050 -s https://check.t
 
 You should get `Congratulations. This browser is configured to use Tor`.
 
-# Password Spraying HTTP Basic Auth
+# Password Spraying HTTP Basic Authentication
 
 ## Step 1
 
@@ -292,59 +285,11 @@ New IP received: 185.220.101.160
 (('user_140500', 'password'), 401)
 
 -- Succesful logins:
-(('user_140237', 'poassword'), 200)
+(('user_140237', 'password'), 200)
 
 Total time needed: 0:08:54.442807
 ```
 
 When you've successfully grabbed valid credentials head over to http://pwspray.vm.vuln.land/ and login manually. You should see the following output.
 
-![Succesfull password spray](/media/challenge/png/successful-spray.png)
-
-# Writing a Metasploit Module in Python
-
-[Metasploit](https://www.metasploit.com/) is a widely used penetration testing framework backed by a community of over 200'000 users and contributors. Metasploits exploit database consists of more than 1'300 exploits and more than 2'000 modules making it probably the most impactful penetration testing tool available today. 
-
-## Step 1
-
-### Prepare your code
-
-Before you start to write your module, make sure you have completed the *Password Spraying* task as you'll need the code you've written for it.
-
-## Step 2
-
-### Install the dependencies
-
-As you won't run the metasploit module within a virtual environment you'll have to install the dependencies globally. 
-
-1. Make sure you aren't within a virtual environment
-
-   The following terminal output shows an example **being within a virtual enviroment**, you can notice it by the string within the parentheses before *root@hlkali*.
-
-   ```bash
-   (p3s-dynamic-client-ip-password-spraying-J5q6zjd1) root@hlkali:/opt/git/p3s-dynamic-client-ip-password-spraying# 
-   ```
-
-   The following terminal output is **not within a virtual environment**.
-
-   ```bash
-   root@hlkali:/opt/git/p3s-dynamic-client-ip-password-spraying# 
-   ```
-
-2. Create a subfolder within the tasks folder
-
-   ```bash
-   cd /opt/git/p3s-dynamic-client-ip-password-spraying
-   mkdir metasploit-module
-   cd metasploit-module
-   ```
-
-3. Install *requests and stem*
-
-   ```bash
-   pip install requests stem
-   ```
-
-## Step 3
-
-TODO: Complete Metasploit Tutorial
+![Succesfull password spray](../media/challenge/png/successful-spray.png)
