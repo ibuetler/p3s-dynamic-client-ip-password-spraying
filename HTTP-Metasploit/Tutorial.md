@@ -2,7 +2,7 @@
 
 In this python3 coding exercise you will learn how to write a Metasploit module.
 
-![Metasploit Diagram](../media/challenge/png/metasploit-diagram.png)
+![Metasploit Diagram](/media/challenge/png/metasploit-diagram.png)
 
 ## Learn how to
 
